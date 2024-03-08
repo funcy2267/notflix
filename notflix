@@ -1,6 +1,5 @@
-#!/bin/sh
+#!/bin/bash
 
-query=$(printf '%s' "$*" | tr ' ' '+' )
-movie=$(curl -s https://1337x.to/search/$query/1/ | grep -Eo "torrent\/[0-9]{7}\/[a-zA-Z0-9?%-]*/" | head -n 1)
-magnet=$(curl -s https://1337x.to/$movie | grep -Po "magnet:\?xt=urn:btih:[a-zA-Z0-9]*" | head -n 1)
-peerflix -l -k $magnet
+query=$(printf '%s' "$*" | sed 's/ /%20/g' )
+magnet=$(curl -s "https://tpb.party/search/$query/1/99/200" | grep -oE 'magnet:[^ ]*' | cut -d $'\n' -f 1)
+peerflix -l -v "$magnet"
